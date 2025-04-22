@@ -2,7 +2,8 @@
 
 int	main(void)
 {
-    FILE *file = fopen("images.jpeg", "rb");
-    read_file(file);
+    t_data *data = malloc(sizeof(t_data));
+    FILE *file = fopen("test.jpg", "rb");
+    read_file(file, data);
     return 0; 
 }

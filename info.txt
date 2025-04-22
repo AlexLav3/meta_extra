@@ -1,1 +1,10 @@
 EXIF (Exchangeable Image File Format) metadata
+
+if (buffer[i] == 0x45 &&     // E
+				buffer[i + 1] == 0x78 && // x
+				buffer[i + 2] == 0x69 && // i
+				buffer[i + 3] == 0x66 && // f
+				buffer[i + 4] == 0x00 && // \0
+				buffer[i + 5] == 0x00)   // \0
+
+EXIF data (JPEG end marker FF D9) -> D9 is end marker for exif data->
