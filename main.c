@@ -2,13 +2,16 @@
 
 int	main(void)
 {
-    t_data *data = malloc(sizeof(t_data));
-    t_res *res = malloc(sizeof(t_res));
-    FILE *file = fopen("20250423_182131.jpg", "rb");
-   if(read_file(file, data))
-        make_str(file, data, res);
-    print_res(res);
+	t_data	*data;
+	t_res	*res;
+	FILE	*file;
+
+	res = malloc(sizeof(t_res));
+	data = malloc(sizeof(t_data));
+	file = fopen("JPG file here", "rb");
+	read_file(file, data);
+    print_res((&data->res_data));
     free(data);
     free(res);
-    return 0; 
+	return (0);
 }

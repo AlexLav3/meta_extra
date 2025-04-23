@@ -1,0 +1,4 @@
+make different systems for motorola or intel (currently works w intel)
+understand why it's not working with photos taken with iphone, find header, model
+    but does read the byres, + no string.
+find other tags 

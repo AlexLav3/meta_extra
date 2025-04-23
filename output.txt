@@ -1,8 +1,0 @@
-EXIF data found at position 2
-TIFF header found at buffer offset 10: 49 49 2A00
-
-EXIF data extraction complete.
-Found 'Make' tag at offset 44
-Type: 2, Count: 8, Offset: 158
-Offset: 158, TIFF Start: 10, Absolute Offset: 168, Count: 8
-Camera Make: samsun
