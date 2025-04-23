@@ -19,12 +19,13 @@ typedef struct {
 
 typedef struct {
 
+    unsigned char	buffer[INT_MAX];
     size_t  pos; 
-    unsigned char	buffer[2048];
 
 }   t_data;
 
 void		read_file(FILE *file, t_data *data);
 bool        find_exif(FILE *file, t_data *data);
+bool 		find_tiff(FILE *file, t_data *data, size_t bytread);
 
 #endif

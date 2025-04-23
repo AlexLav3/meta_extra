@@ -1,60 +1,48 @@
 #include "meta_ext.h"
 
-bool        find_exif(FILE *file, t_data *data)
-{
+bool find_exif(FILE *file, t_data *data) {
     size_t bytesRead;
-    
+
     if (!file) return false;
-    // Read the file in chunks
-    while ((bytesRead = fread(data->buffer, 1, sizeof(data->buffer), file)) > 0)
-    {
-        // Look for the EXIF signature
-        for (size_t i = 0; i < bytesRead; i++)
-        {
-            if (data->buffer[i] == 0x45 && data->buffer[i + 1] == 0x78 && 
-                data->buffer[i + 2] == 0x69 && data->buffer[i + 3] == 0x66 && 
-                data->buffer[i + 4] == 0x00 && data->buffer[i + 5] == 0x00)
-            {
-                data->pos = i;
-                return true; // Found EXIF
+
+    while ((bytesRead = fread(data->buffer, 1, sizeof(data->buffer), file)) > 0) {
+        for (size_t i = 0; i < bytesRead - 10; i++) {
+            if (data->buffer[i] == 0xFF && data->buffer[i + 1] == 0xE1 &&
+                data->buffer[i + 4] == 0x45 && data->buffer[i + 5] == 0x78 &&
+                data->buffer[i + 6] == 0x69 && data->buffer[i + 7] == 0x66 &&
+                data->buffer[i + 8] == 0x00 && data->buffer[i + 9] == 0x00) {
+                
+                data->pos = ftell(file) - bytesRead + i;
+                return true;
             }
         }
     }
-    return false; // EXIF not found
+    return false;
 }
 
-void	read_file(FILE *file, t_data *data)
-{
-	unsigned char	buffer[2048];
-	size_t			bytesRead;
+void read_file(FILE *file, t_data *data) {
+    size_t bytesRead;
 
-	if (find_exif(file, data))
-    {
+    if (find_exif(file, data)) {
         printf("EXIF data found at position %zu\n", data->pos);
-        fseek(file, data->pos, SEEK_SET); // Go back to the position of EXIF data
-
-        bool found_end_marker = false;
-        while ((bytesRead = fread(data->buffer, 1, sizeof(data->buffer), file)) > 0 && !found_end_marker) {
-            // Check for the end of EXIF data (JPEG end marker FF D9)
-            for (size_t i = 0; i < bytesRead - 1; i++) {
-                if (data->buffer[i] == 0xFF && data->buffer[i + 1] == 0xD9) {
-                    found_end_marker = true;
-                    bytesRead = i + 2;  // Stop after the FF D9 marker
-                    break;
-                }
-            }
-            // Print the EXIF data
-            for (size_t i = 0; i < bytesRead; i += 2) {
-                uint16_t val = buffer[i] | (buffer[i + 1] << 8); // Little endian
-                printf("%04X ", val); // or use %5d for decimal
-            }
-        }
         printf("\nEXIF data extraction complete.\n");
-    }
-    else 
-    {
+        find_tiff(file, data, bytesRead);
+            
+    } else {
         printf("EXIF data not found\n");
     }
     fclose(file);
 }
 
+bool find_tiff(FILE *file, t_data *data, size_t bytread)
+{
+    for (size_t i = 0; i < bytread - 3; i++) {
+        if (data->buffer[i] == 0x49 && data->buffer[i + 1] == 0x49 &&
+            data->buffer[i + 2] == 0x2A && data->buffer[i + 3] == 0x00) {
+            printf("TIFF header found at buffer offset %zu: %02X %02X %02X %02X\n", i,
+                   data->buffer[i], data->buffer[i+1], data->buffer[i+2], data->buffer[i+3]);
+            return true;
+        }
+    }
+    return false;
+}
