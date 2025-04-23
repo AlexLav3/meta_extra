@@ -2,30 +2,41 @@
 # define META_EXT
 
 # include <limits.h>
+# include <stdbool.h>
 # include <stdint.h>
 # include <stdio.h>
+# include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
-#include <stdbool.h> 
 
-typedef struct {
+typedef struct
+{
+	char			*model;
+	char			settings[INT_MAX];
+	long			date;
+	float			time;
+	char			loc[INT_MAX];
+}					t_res;
 
-	char	model[INT_MAX];
-	char	settings[INT_MAX];
-	long	date;
-	float	time;
-	char	loc[INT_MAX];
-}			t_res;
+typedef struct
+{
+	unsigned char	buffer[INT_MAX];
+	size_t			byt_read;
+	size_t			tiff_start;
+	uint16_t		type;
+	uint16_t		count;
+	uint16_t		offset;
+	size_t			pos;
 
-typedef struct {
+}					t_data;
 
-    unsigned char	buffer[INT_MAX];
-    size_t  pos; 
+bool				read_file(FILE *file, t_data *data);
+bool				find_exif(FILE *file, t_data *data);
+bool				find_tiff(FILE *file, t_data *data, size_t bytread);
+bool				find_tags(FILE *file, t_data *data);
+void				get_info(FILE *file, t_data *data, int i);
+void				make_str(FILE *file, t_data *data, t_res *res);
 
-}   t_data;
-
-void		read_file(FILE *file, t_data *data);
-bool        find_exif(FILE *file, t_data *data);
-bool 		find_tiff(FILE *file, t_data *data, size_t bytread);
+void				print_res(t_res *res);
 
 #endif

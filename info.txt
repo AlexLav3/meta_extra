@@ -7,4 +7,4 @@ if (buffer[i] == 0x45 &&     // E
 				buffer[i + 4] == 0x00 && // \0
 				buffer[i + 5] == 0x00)   // \0
 
-EXIF data (JPEG end marker FF D9) -> D9 is end marker for exif data->
+EXIF data (JPEG end marker FF D9) -> D9 is end marker for exif data
