@@ -17,6 +17,18 @@ Extracts:
 
 All processing is done using manual offset calculations and byte-level logic.
 
+
+⚠️ 📝 Notes
+
+
+✅ Tested with photos taken on Android devices
+
+
+❗ Not all JPEGs contain EXIF data — especially if edited, downloaded from certain platforms (ex. Instagram), or stripped by privacy settings
+
+
+✉️ Photos sent via Gmail (to self) retain EXIF data — tested.
+
 Works entirely with raw byte buffers and offsets
 Being developed on Ubuntu
 
