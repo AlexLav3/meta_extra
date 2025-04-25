@@ -2,10 +2,12 @@
 
 void	make_tags(FILE *file, t_data *data, t_res *res)
 {
+    printf("entering MAKE TAGS\n");
 	if (data->type == 2 && data->count < 256)
         str_tags(file, data, res);
-    else if(data->type == 5)
+    else if(data->type == 5 && (data->tag == LATITUDE || data->tag == LONGITUDE))
         rational_tags(file, data, res);
+    printf("Exit MAKE TAGS\n");
 }
 
 void	str_tags(FILE *file, t_data *data, t_res *res)
@@ -15,7 +17,7 @@ void	str_tags(FILE *file, t_data *data, t_res *res)
 	size_t	bytesRead;
     
 	// Print debug information about offsets and counts
-	printf("Offset: %u, TIFF Start: %u, Absolute Offset: %zu, Count: %u\n", data->offset, data->tiff_start, absolute_offset, data->count);
+	//printf("Offset: %u, TIFF Start: %u, Absolute Offset: %zu, Count: %u\n", data->offset, data->tiff_start, absolute_offset, data->count);
 	
     // Seek to the absolute position of the string data
 	fseek(file, absolute_offset, SEEK_SET);
@@ -43,9 +45,9 @@ void	str_tags(FILE *file, t_data *data, t_res *res)
         else if (data->tag == EASTWEAST)
             res->east_west = str[start_idx];
          // debug info
-		printf("start index: %zu\n", start_idx);
-		printf("bytes read: %zu\n", bytesRead);
-		printf("res model: %s\nres make:%s\n", res->model, res->make);
+		// printf("start index: %zu\n", start_idx);
+		// printf("bytes read: %zu\n", bytesRead);
+		// printf("res model: %s\nres make:%s\n", res->model, res->make);
 		fseek(file, current, SEEK_SET);
         return;
     }

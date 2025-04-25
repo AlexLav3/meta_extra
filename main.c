@@ -10,7 +10,7 @@ int	main(void)
 	if(!data || !res || !rational || !gps_cord)
 		return 0; 
 
-	FILE	*file = fopen("/home/elavrich/Documents/homegit/20250426_002510.jpg", "rb");
+	FILE	*file = fopen(" JGP FILE ", "rb");
 	read_file(file, data);
     print_res((&data->res_data));
 

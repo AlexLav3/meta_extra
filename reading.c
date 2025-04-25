@@ -93,7 +93,9 @@ bool	find_tags(FILE *file, t_data *data)
 
 void	get_info(FILE *file, t_data *data, int offset, uint16_t tag)
 {
-	data->type = data->buffer[offset + 2] | (data->buffer[offset + 3] << 8);
+	printf("entering get info\n");
+	if(data->tag == 2 || data->tag == 1 || data->tag == 3 || data->tag == 4)
+		data->type = data->buffer[offset + 2] | (data->buffer[offset + 3] << 8);
 	data->count = data->buffer[offset + 4] | (data->buffer[offset+ 5] << 8) | (data->buffer[offset + 6] << 16) | (data->buffer[offset+ 7] << 24);
 	data->offset = data->buffer[offset + 8] | (data->buffer[offset+ 9] << 8) | (data->buffer[offset+ 10] << 16) | (data->buffer[offset + 11] << 24);
 	printf("get info Type: %u, Count: %u, Offset: %u\n", data->type, data->count,data->offset);
@@ -101,6 +103,9 @@ void	get_info(FILE *file, t_data *data, int offset, uint16_t tag)
 
 bool tag_found(uint16_t tag, t_data *data)
 {	
+	printf("tag found TAG 0x%04X\n", tag);
+	if (tag >= 0x0001 && tag <= 0x0004) //NEED TO FIND THE OFFSET FOR THE GPS - CREATE NEW FUNCTION!
+		printf("Found GPS-related tag: 0x%04X\n", tag);
 	switch (tag)
 	{
 		case 0x0110: // Model
@@ -120,6 +125,7 @@ bool tag_found(uint16_t tag, t_data *data)
 
 		case 0x0002: // Latitude
 			printf("Found 'Latitude' tag \n");
+			data->type = 5;
 			data->tag = LATITUDE;
 			return true;
 
@@ -130,6 +136,7 @@ bool tag_found(uint16_t tag, t_data *data)
 
 		case 0x0004: // Longitude
 			printf("Found 'Longitude' tag \n");
+			data->type = 5;
 			data->tag = LONGITUDE;
 			return true;
 		default:
