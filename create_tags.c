@@ -57,7 +57,7 @@ void	str_tags(FILE *file, t_data *data, t_res *res)
 
 void    rational_tags(FILE *file, t_data *data, t_res *res)
 {
-    printf("\nTag: %i\n", data->tag);
+    printf("\nRational Tags: %i\n", data->tag);
     if (data->tag != LONGITUDE && data->tag != LATITUDE)
         return;
 

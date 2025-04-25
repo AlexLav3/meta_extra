@@ -10,7 +10,7 @@ int	main(void)
 	if(!data || !res || !rational || !gps_cord)
 		return 0; 
 
-	FILE	*file = fopen(" JGP FILE ", "rb");
+	FILE	*file = fopen("JPG FILE HERE", "rb");
 	read_file(file, data);
     print_res((&data->res_data));
 

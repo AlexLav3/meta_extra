@@ -66,7 +66,9 @@ bool	find_tiff(FILE *file, t_data *data, size_t bytread)
 
 /* type = kind of data
 Count = how many items of that type.
-Offset = where to find the data if it's too big to fit in the 4-byte space.*/
+Offset = where to find the data if it's too big to fit in the 4-byte space.
+!Wrong offset for GPS INFO!
+*/
 bool	find_tags(FILE *file, t_data *data)
 {
 	bool 		any = false;
