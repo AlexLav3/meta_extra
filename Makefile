@@ -3,7 +3,7 @@ CC = cc -g
 CFLAGS =  
 LDFLAGS = 
 
-SOURCES = main.c reading.c print.c
+SOURCES = main.c reading.c print.c create_tags.c
 OBJECTS = $(SOURCES:.c=.o)
 
 all: $(NAME)

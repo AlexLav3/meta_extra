@@ -9,17 +9,38 @@
 # include <string.h>
 # include <unistd.h>
 
-#define MAKE 1
-#define MODEL 2
+# define MAKE 1
+# define MODEL 2
+# define NOTHSOUTH 3
+# define EASTWEAST 4
+# define LATITUDE 5
+# define LONGITUDE 6
+
+typedef struct
+{
+	uint32_t		numerator;
+	uint32_t		denominator;
+}					Rational;
+
+typedef struct
+{
+	Rational		degrees;
+	Rational		minutes;
+	Rational		seconds;
+}					GPS_Coord;
 
 typedef struct
 {
 	char			*model;
-	char 			*make;
-	char			settings[INT_MAX];
-	long			date;
-	float			time;
-	char			loc[INT_MAX];
+	char			*make;
+
+	//location
+	char 			*norht_south; //EXIF type = 2, ASCII
+	GPSCoord		latitude;
+	GPSCoord		longitude;
+	char			*east_west; // 'E' or 'W'
+	char			loc[INT_MAX]; //store end location result
+
 }					t_res;
 
 typedef struct
@@ -31,18 +52,24 @@ typedef struct
 	uint16_t		count;
 	uint16_t		offset;
 	size_t			pos;
-	int 			tag;
+	int				tag;
 	t_res			res_data;
 }					t_data;
 
+//reading and finding
 bool				read_file(FILE *file, t_data *data);
 bool				find_exif(FILE *file, t_data *data);
 bool				find_tiff(FILE *file, t_data *data, size_t bytread);
 bool				find_tags(FILE *file, t_data *data);
+
+//get information from the tags
 void				get_info(FILE *file, t_data *data, int i, uint16_t tag);
+
+//tag and result
 void				make_tags(FILE *file, t_data *data, t_res *res);
 void				str_tags(FILE *file, t_data *data, t_res *res);
 
+//result
 void				print_res(t_res *res);
 
 #endif

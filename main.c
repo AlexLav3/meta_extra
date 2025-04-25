@@ -7,8 +7,12 @@ int	main(void)
 	FILE	*file;
 
 	res = malloc(sizeof(t_res));
+	if(!res)
+		return (EXIT_FAILURE);
 	data = malloc(sizeof(t_data));
-	file = fopen("JPG file here", "rb");
+	if(!data)
+		return (EXIT_FAILURE);
+	file = fopen("/home/elavrich/Documents/homegit/test2.jpg", "rb");
 	read_file(file, data);
     print_res((&data->res_data));
     free(data);

@@ -2,7 +2,7 @@
 
 bool	find_exif(FILE *file, t_data *data)
 {
-	size_t	bytesRead;
+	size_t	bytesRead = 0;
 
 	if (!file)
 		return (false);
@@ -25,13 +25,13 @@ bool	find_exif(FILE *file, t_data *data)
 
 bool	read_file(FILE *file, t_data *data)
 {
-	size_t	bytesRead;
+	size_t	bytesRead = 0;
 
 	if (find_exif(file, data))
 	{
-		printf("EXIF data found at position %zu\n", data->pos);
-		// Move to EXIF position and load new buffer
-		fseek(file, data->pos, SEEK_SET);
+		printf("EXIF data found at position %zu\n", data->pos); 
+		
+		fseek(file, data->pos, SEEK_SET); // Move to EXIF position and load new buffer
 		bytesRead = fread(data->buffer, 1, sizeof(data->buffer), file);
 		data->byt_read = bytesRead;
 		if (!find_tiff(file, data, bytesRead))
@@ -69,42 +69,26 @@ Count = how many items of that type.
 Offset = where to find the data if it's too big to fit in the 4-byte space.*/
 bool	find_tags(FILE *file, t_data *data)
 {
-	bool		any_found;
-	size_t		tiff;
-	uint32_t	ifd_offset;
-	size_t		ifd_start;
-	uint16_t	entry_count;
-	size_t		entry_offset;
-	uint16_t	tag;
-
-	any_found = false;
-	tiff = data->tiff_start;
-	ifd_offset = data->buffer[tiff + 4] | (data->buffer[tiff+ 5] << 8) | (data->buffer[tiff + 6] << 16) | (data->buffer[tiff+ 7] << 24);
-	ifd_start = tiff + ifd_offset;
-	entry_count = data->buffer[ifd_start] | (data->buffer[ifd_start + 1] << 8);
-
+	bool 		any = false;
+	size_t		entry_offset = 0;
+	uint16_t	tag = 0;
+	size_t		tiff = data->tiff_start;
+	uint32_t	ifd_offset = data->buffer[tiff + 4] | (data->buffer[tiff+ 5] << 8) | (data->buffer[tiff + 6] << 16) | (data->buffer[tiff+ 7] << 24);
+	size_t		ifd_start = tiff + ifd_offset;
+	uint16_t	entry_count = data->buffer[ifd_start] | (data->buffer[ifd_start + 1] << 8);
+	
 	for (int i = 0; i < entry_count; i++)
 	{
 		entry_offset = ifd_start + 2 + (i * 12);
 		tag = data->buffer[entry_offset] | (data->buffer[entry_offset + 1] << 8);
-		if (tag == 0x0110)
-		{ // Model tag
-			printf("Found 'Model' tag at offset %zu\n", entry_offset);
+		if (any_found(tag))
+		{
 			get_info(file, data, entry_offset, tag);
-			data->tag = MODEL;
 			make_tags(file, data, &data->res_data);
-			any_found = true;
-		}
-		else if  (tag == 0x010F)
-		{ // Make tag
-			printf("Found 'Make' tag at offset %zu\n", entry_offset);
-			get_info(file, data, entry_offset, tag);
-            data->tag = MAKE;
-            make_tags(file, data, &data->res_data);
-			any_found = true;
+			any = true;
 		}
 	}
-	return (any_found);
+	return any;
 }
 
 void	get_info(FILE *file, t_data *data, int offset, uint16_t tag)
@@ -115,68 +99,40 @@ void	get_info(FILE *file, t_data *data, int offset, uint16_t tag)
 	printf("get info Type: %u, Count: %u, Offset: %u\n", data->type, data->count,data->offset);
 }
 
-void	make_tags(FILE *file, t_data *data, t_res *res)
-{
-	long	current;
-	size_t	absolute_offset;
-	size_t	bytesRead;
-	size_t	start_idx;
+bool tag_found(uint16_t tag)
+{	
+	switch (tag)
+	{
+		case 0x0110: // Model
+			printf("Found 'Model' tag \n", entry_offset);
+			data->tag = MODEL;
+			return true;
 
-	if (data->type == 2 && data->count < 256)
-        str_tags(file, data, res);
-	return;
-}
+		case 0x010F: // Make
+			printf("Found 'Make' tag \n", entry_offset);
+			data->tag = MAKE;
+			return true;
 
-void	str_tags(FILE *file, t_data *data, t_res *res)
-{
-	long	current;
-	size_t	absolute_offset;
-	size_t	bytesRead;
-	size_t	start_idx;
+		case 0x0001: // North/South
+			printf("Found 'Make' tag \n", entry_offset);
+			data->tag = NOTHSOUTH;
+			return true;
 
-	bytesRead = 0;
-	current = ftell(file);
-	// Adjust the offset calculation to be relative to the TIFF start
-	absolute_offset = data->offset + data->tiff_start;
-    
-	// Print debug information about offsets and counts
-	printf("Offset: %u, TIFF Start: %u, Absolute Offset: %zu, Count: %u\n", data->offset, data->tiff_start, absolute_offset, data->count);
-	
-    // Seek to the absolute position of the string data
-	fseek(file, absolute_offset, SEEK_SET);
-    
-	// Read string
-	char str[256] = {0};
-    bytesRead = fread(str, 1, data->count, file);
-    str[data->count] = '\0'; 
+		case 0x0002: // Latitude
+			printf("Found 'Latitude' tag \n",);
+			data->tag = LATITUDE;
+			return true;
 
-    //debug
-    // printf("Bytes read: %zu\n", bytesRead);
-    // for (size_t i = 0; i < bytesRead; i++)
-    //     printf("%02X ", (unsigned char)str[i]);
-    // printf("\n");
+		case 0x0003: // East/West
+			printf("Found 'East/West' tag \n", entry_offset);
+			data->tag = EASTWEAST;
+			return true;
 
-	str[bytesRead] = '\0';
-	// Trim null bytes if necessary
-	start_idx = 2;
-	while (start_idx < bytesRead && (str[start_idx] < 32 || str[start_idx] > 126))
-		start_idx++;
-	// Print out the cleaned string (skip the padding)
-    if (start_idx < bytesRead) {
-		// for(size_t i = 0; i < bytesRead; i++)
-		// 	printf("%c, %zu\n", str[i], i);
-        printf("\nTag: %i\n", data->tag);
-        if (data->tag == MAKE)
-            res->make = strdup(&str[start_idx]);
-        else if (data->tag == MODEL)
-            res->model = strdup(&str[start_idx]);
-		// printf("start index: %zu\n", start_idx);
-		// printf("bytes read: %zu\n", bytesRead);
-		// printf("res model: %s\nres make:%s\n", res->model, res->make);
-		// printf("this ended\n");
-		fseek(file, current, SEEK_SET);
-        return;
-    }
-    printf("No valid string data found.\n");
-    fseek(file, current, SEEK_SET);
+		case 0x0004: // Longitude
+			printf("Found 'Longitude' tag \n", entry_offset);
+			data->tag = LONGITUDE;
+			return true;
+		default:
+			return false;
+	}
 }
