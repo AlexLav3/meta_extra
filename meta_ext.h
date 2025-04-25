@@ -27,20 +27,22 @@ typedef struct
 	Rational		degrees;
 	Rational		minutes;
 	Rational		seconds;
-}					GPS_Coord;
+}					GPS_Coord; //EXIF type 5
 
 typedef struct
 {
+	//camera info EXIF type = 2, ASCII
 	char			*model;
 	char			*make;
 
 	//location
-	char 			*norht_south; //EXIF type = 2, ASCII
-	GPSCoord		latitude;
-	GPSCoord		longitude;
-	char			*east_west; // 'E' or 'W'
-	char			loc[INT_MAX]; //store end location result
+	//EXIF type = 2, ASCII
+	char 			north_south; // 'N or 'S'
+	char			east_west; // 'E' or 'W'
 
+	GPS_Coord		latitude; 
+	GPS_Coord		longitude; 
+	char			loc[INT_MAX]; //store end location result
 }					t_res;
 
 typedef struct
@@ -66,9 +68,15 @@ bool				find_tags(FILE *file, t_data *data);
 void				get_info(FILE *file, t_data *data, int i, uint16_t tag);
 
 //tag and result
+bool 				tag_found(uint16_t tag, t_data *data);
 void				make_tags(FILE *file, t_data *data, t_res *res);
 void				str_tags(FILE *file, t_data *data, t_res *res);
+void    			rational_tags(FILE *file, t_data *data, t_res *res);
 
+//location 
+GPS_Coord 			convert_coord(Rational *coords);
+double 				convert_to_decimal(Rational *coords, char ref);
+double 				rational_to_double(Rational number);
 //result
 void				print_res(t_res *res);
 

@@ -1,9 +1,8 @@
 NAME = meta_ext
 CC = cc -g
-CFLAGS =  
-LDFLAGS = 
+CFLAGS = 
 
-SOURCES = main.c reading.c print.c create_tags.c
+SOURCES = main.c reading.c print.c create_tags.c utils.c 
 OBJECTS = $(SOURCES:.c=.o)
 
 all: $(NAME)

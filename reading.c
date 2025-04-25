@@ -81,7 +81,7 @@ bool	find_tags(FILE *file, t_data *data)
 	{
 		entry_offset = ifd_start + 2 + (i * 12);
 		tag = data->buffer[entry_offset] | (data->buffer[entry_offset + 1] << 8);
-		if (any_found(tag))
+		if (tag_found(tag, data))
 		{
 			get_info(file, data, entry_offset, tag);
 			make_tags(file, data, &data->res_data);
@@ -99,37 +99,37 @@ void	get_info(FILE *file, t_data *data, int offset, uint16_t tag)
 	printf("get info Type: %u, Count: %u, Offset: %u\n", data->type, data->count,data->offset);
 }
 
-bool tag_found(uint16_t tag)
+bool tag_found(uint16_t tag, t_data *data)
 {	
 	switch (tag)
 	{
 		case 0x0110: // Model
-			printf("Found 'Model' tag \n", entry_offset);
+			printf("Found 'Model' tag \n");
 			data->tag = MODEL;
 			return true;
 
 		case 0x010F: // Make
-			printf("Found 'Make' tag \n", entry_offset);
+			printf("Found 'Make' tag \n");
 			data->tag = MAKE;
 			return true;
 
 		case 0x0001: // North/South
-			printf("Found 'Make' tag \n", entry_offset);
+			printf("Found 'Make' tag \n");
 			data->tag = NOTHSOUTH;
 			return true;
 
 		case 0x0002: // Latitude
-			printf("Found 'Latitude' tag \n",);
+			printf("Found 'Latitude' tag \n");
 			data->tag = LATITUDE;
 			return true;
 
 		case 0x0003: // East/West
-			printf("Found 'East/West' tag \n", entry_offset);
+			printf("Found 'East/West' tag \n");
 			data->tag = EASTWEAST;
 			return true;
 
 		case 0x0004: // Longitude
-			printf("Found 'Longitude' tag \n", entry_offset);
+			printf("Found 'Longitude' tag \n");
 			data->tag = LONGITUDE;
 			return true;
 		default:
