@@ -4,9 +4,8 @@ void	make_tags(FILE *file, t_data *data, t_res *res)
 {
 	if (data->type == 2 && data->count < 256)
         str_tags(file, data, res);
-    if(data->type == 5 && data->count < 256)
+    else if(data->type == 5)
         rational_tags(file, data, res);
-	return;
 }
 
 void	str_tags(FILE *file, t_data *data, t_res *res)
@@ -27,7 +26,7 @@ void	str_tags(FILE *file, t_data *data, t_res *res)
 	str[bytesRead] = '\0';
 
 	// Trim null bytes if necessary
-    size_t	start_idx = 2;
+    size_t	start_idx;
 	while (start_idx < bytesRead && (str[start_idx] < 32 || str[start_idx] > 126))
 		start_idx++;
 	// get the cleaned string (skip the padding)
@@ -43,12 +42,11 @@ void	str_tags(FILE *file, t_data *data, t_res *res)
             res->north_south = str[start_idx];
         else if (data->tag == EASTWEAST)
             res->east_west = str[start_idx];
-        /* // debug info
+         // debug info
 		printf("start index: %zu\n", start_idx);
 		printf("bytes read: %zu\n", bytesRead);
 		printf("res model: %s\nres make:%s\n", res->model, res->make);
-		printf("this ended\n");
-		fseek(file, current, SEEK_SET); */
+		fseek(file, current, SEEK_SET);
         return;
     }
     printf("No valid string data found.\n");
@@ -57,6 +55,7 @@ void	str_tags(FILE *file, t_data *data, t_res *res)
 
 void    rational_tags(FILE *file, t_data *data, t_res *res)
 {
+    printf("\nTag: %i\n", data->tag);
     if (data->tag != LONGITUDE && data->tag != LATITUDE)
         return;
 

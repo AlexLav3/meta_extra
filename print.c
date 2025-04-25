@@ -8,7 +8,7 @@ void	print_res(t_res *res)
 	double longitude = convert_to_decimal((Rational *)&res->longitude, res->east_west);
 
 	printf("Camera Make: %s\n", res->make);
-	printf("Camera Make: %s\n", res->make);
+	printf("Camera Model: %s\n", res->model);
 	printf("Latitude: %f\n", latitude);
 	printf("Longitude: %f\n", longitude);
 }
