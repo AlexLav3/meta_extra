@@ -67,7 +67,6 @@ bool	find_tiff(FILE *file, t_data *data, size_t bytread)
 /* type = kind of data
 Count = how many items of that type.
 Offset = where to find the data if it's too big to fit in the 4-byte space.
-!Wrong offset for GPS INFO!
 */
 bool	find_tags(FILE *file, t_data *data)
 {
@@ -90,6 +89,33 @@ bool	find_tags(FILE *file, t_data *data)
 			any = true;
 		}
 	}
+	for (int i = 0; i < entry_count; i++)
+	{
+		entry_offset = ifd_start + 2 + (i * 12);
+		tag = data->buffer[entry_offset] | (data->buffer[entry_offset + 1] << 8);
+		if (tag == 0x8825)
+		find_gpt_tags(file, data, entry_count, ifd_start, entry_offset);
+	}
+	return any;
+}
+
+bool	find_gpt_tags(FILE *file, t_data *data, uint16_t entry_count, size_t ifd_start, size_t entry_offset)
+{
+	bool any = false;
+	uint32_t gps_offset = data->buffer[entry_offset + 8]| (data->buffer[entry_offset + 9] << 8)| (data->buffer[entry_offset + 10] << 16)| (data->buffer[entry_offset + 11] << 24);
+	size_t gps_ifd_start = data->tiff_start + gps_offset;
+	uint16_t gps_entry_count = data->buffer[gps_ifd_start] | (data->buffer[gps_ifd_start + 1] << 8);
+	for (int j = 0; j < gps_entry_count; j++)
+	{
+	    size_t gps_entry_offset = gps_ifd_start + 2 + (j * 12);
+	    uint16_t gps_tag = data->buffer[gps_entry_offset] | (data->buffer[gps_entry_offset + 1] << 8);
+	    if (tag_found(gps_tag, data))
+	    {
+	        get_info(file, data, gps_entry_offset, gps_tag);
+	        make_tags(file, data, &data->res_data);
+			any = true;
+	    }
+	}
 	return any;
 }
 
@@ -106,8 +132,6 @@ void	get_info(FILE *file, t_data *data, int offset, uint16_t tag)
 bool tag_found(uint16_t tag, t_data *data)
 {	
 	printf("tag found TAG 0x%04X\n", tag);
-	if (tag >= 0x0001 && tag <= 0x0004) //NEED TO FIND THE OFFSET FOR THE GPS - CREATE NEW FUNCTION!
-		printf("Found GPS-related tag: 0x%04X\n", tag);
 	switch (tag)
 	{
 		case 0x0110: // Model

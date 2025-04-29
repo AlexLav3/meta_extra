@@ -63,6 +63,8 @@ bool				read_file(FILE *file, t_data *data);
 bool				find_exif(FILE *file, t_data *data);
 bool				find_tiff(FILE *file, t_data *data, size_t bytread);
 bool				find_tags(FILE *file, t_data *data);
+bool				find_gpt_tags(FILE *file, t_data *data, uint16_t entry_count, size_t ifd_start, size_t entry_offset);
+
 
 //get information from the tags
 void				get_info(FILE *file, t_data *data, int i, uint16_t tag);

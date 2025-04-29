@@ -10,7 +10,7 @@ int	main(void)
 	if(!data || !res || !rational || !gps_cord)
 		return 0; 
 
-	FILE	*file = fopen("JPG FILE HERE", "rb");
+	FILE	*file = fopen("/home/elavrich/Documents/homegit/test2.jpg", "rb");
 	read_file(file, data);
     print_res((&data->res_data));
 
