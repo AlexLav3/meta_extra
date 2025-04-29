@@ -2,12 +2,12 @@
 
 void	make_tags(FILE *file, t_data *data, t_res *res)
 {
-    printf("entering MAKE TAGS\n");
+    //printf("entering MAKE TAGS\n");
 	if (data->type == 2 && data->count < 256)
         str_tags(file, data, res);
     else if(data->type == 5 && (data->tag == LATITUDE || data->tag == LONGITUDE))
         rational_tags(file, data, res);
-    printf("Exit MAKE TAGS\n");
+   // printf("Exit MAKE TAGS\n");
 }
 
 void	str_tags(FILE *file, t_data *data, t_res *res)
@@ -35,7 +35,7 @@ void	str_tags(FILE *file, t_data *data, t_res *res)
     if (start_idx < bytesRead) {
 		// for(size_t i = 0; i < bytesRead; i++)
 		// 	printf("%c, %zu\n", str[i], i);
-        printf("\nTag: %i\n", data->tag);
+        //printf("\nTag: %i\n", data->tag);
         if (data->tag == MAKE)
             res->make = strdup(&str[start_idx]);
         else if (data->tag == MODEL)
@@ -51,13 +51,13 @@ void	str_tags(FILE *file, t_data *data, t_res *res)
 		fseek(file, current, SEEK_SET);
         return;
     }
-    printf("No valid string data found.\n");
+    //printf("No valid string data found.\n");
     fseek(file, current, SEEK_SET);
 }
 
 void    rational_tags(FILE *file, t_data *data, t_res *res)
 {
-    printf("\nRational Tags: %i\n", data->tag);
+    //printf("\nRational Tags: %i\n", data->tag);
     if (data->tag != LONGITUDE && data->tag != LATITUDE)
         return;
 
