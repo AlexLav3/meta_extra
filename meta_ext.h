@@ -48,6 +48,8 @@ typedef struct
 typedef struct
 {
 	unsigned char	buffer[INT_MAX];
+	FILE			*file;
+	char			*file_name;
 	size_t			byt_read;
 	size_t			tiff_start;
 	uint16_t		type;

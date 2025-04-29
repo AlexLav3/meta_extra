@@ -1,22 +1,26 @@
 #include "meta_ext.h"
 
-int	main(void)
+int	main(int argc, char **argv)
 {
+	if(argc != 2)
+	{
+		printf("Usage: %s <filename>\n", argv[0]);
+		return (1);
+	}
 	t_data	*data = malloc(sizeof(t_data));
-	t_res	*res = malloc(sizeof(t_res));
-	Rational *rational = malloc(sizeof(Rational));
-	GPS_Coord *gps_cord = malloc(sizeof(GPS_Coord));
-
-	if(!data || !res || !rational || !gps_cord)
+	if(!data)
 		return 0; 
-
-	FILE	*file = fopen("/home/elavrich/Documents/homegit/test2.jpg", "rb");
-	read_file(file, data);
+	data->file_name = argv[1];
+	data->file = fopen(data->file_name, "rb");
+	if (!data->file)
+	{
+		perror("Error opening file");
+		free(data);
+		return (1);
+	}
+	read_file(data->file, data);
     print_res((&data->res_data));
 
     free(data);
-    free(res);
-	free(rational);
-	free(gps_cord);
 	return (0);
 }
