@@ -42,7 +42,6 @@ typedef struct
 
 	GPS_Coord		latitude; 
 	GPS_Coord		longitude; 
-	char			loc[INT_MAX]; //store end location result
 }					t_res;
 
 typedef struct
@@ -63,13 +62,13 @@ typedef struct
 //reading and finding
 bool				read_file(FILE *file, t_data *data);
 bool				find_exif(FILE *file, t_data *data);
-bool				find_tiff(FILE *file, t_data *data, size_t bytread);
-bool				find_tags(FILE *file, t_data *data);
+bool				find_tiff(t_data *data, size_t bytread);
+bool				find_tags(t_data *data);
 bool				find_gpt_tags(FILE *file, t_data *data, uint16_t entry_count, size_t ifd_start, size_t entry_offset);
 
 
 //get information from the tags
-void				get_info(FILE *file, t_data *data, int i, uint16_t tag);
+void				get_info(t_data *data, int i, uint16_t tag);
 
 //tag and result
 bool 				tag_found(uint16_t tag, t_data *data);

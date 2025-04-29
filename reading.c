@@ -34,13 +34,13 @@ bool	read_file(FILE *file, t_data *data)
 		fseek(file, data->pos, SEEK_SET); // Move to EXIF position and load new buffer
 		bytesRead = fread(data->buffer, 1, sizeof(data->buffer), file);
 		data->byt_read = bytesRead;
-		if (!find_tiff(file, data, bytesRead))
+		if (!find_tiff(data, bytesRead))
 		{
 			//printf("TIFF header not found\n");
 			return (false);
 		}
 		//printf("\nEXIF data extraction complete.\n");
-		find_tags(file, data);
+		find_tags(data);
 		return (true);
 	}
 	else
@@ -49,7 +49,7 @@ bool	read_file(FILE *file, t_data *data)
 	return (false);
 }
 
-bool	find_tiff(FILE *file, t_data *data, size_t bytread)
+bool	find_tiff(t_data *data, size_t bytread)
 {
 	for (size_t i = 0; i < bytread; i++)
 	{
@@ -68,7 +68,7 @@ bool	find_tiff(FILE *file, t_data *data, size_t bytread)
 Count = how many items of that type.
 Offset = where to find the data if it's too big to fit in the 4-byte space.
 */
-bool	find_tags(FILE *file, t_data *data)
+bool	find_tags(t_data *data)
 {
 	bool 		any = false;
 	size_t		entry_offset = 0;
@@ -84,8 +84,8 @@ bool	find_tags(FILE *file, t_data *data)
 		tag = data->buffer[entry_offset] | (data->buffer[entry_offset + 1] << 8);
 		if (tag_found(tag, data))
 		{
-			get_info(file, data, entry_offset, tag);
-			make_tags(file, data, &data->res_data);
+			get_info(data, entry_offset, tag);
+			make_tags(data->file, data, &data->res_data);
 			any = true;
 		}
 	}
@@ -94,7 +94,7 @@ bool	find_tags(FILE *file, t_data *data)
 		entry_offset = ifd_start + 2 + (i * 12);
 		tag = data->buffer[entry_offset] | (data->buffer[entry_offset + 1] << 8);
 		if (tag == 0x8825)
-		find_gpt_tags(file, data, entry_count, ifd_start, entry_offset);
+		find_gpt_tags(data->file, data, entry_count, ifd_start, entry_offset);
 	}
 	return any;
 }
@@ -111,7 +111,7 @@ bool	find_gpt_tags(FILE *file, t_data *data, uint16_t entry_count, size_t ifd_st
 	    uint16_t gps_tag = data->buffer[gps_entry_offset] | (data->buffer[gps_entry_offset + 1] << 8);
 	    if (tag_found(gps_tag, data))
 	    {
-	        get_info(file, data, gps_entry_offset, gps_tag);
+	        get_info(data, gps_entry_offset, gps_tag);
 	        make_tags(file, data, &data->res_data);
 			any = true;
 	    }
@@ -119,7 +119,7 @@ bool	find_gpt_tags(FILE *file, t_data *data, uint16_t entry_count, size_t ifd_st
 	return any;
 }
 
-void	get_info(FILE *file, t_data *data, int offset, uint16_t tag)
+void	get_info(t_data *data, int offset, uint16_t tag)
 {
 	//printf("entering get info\n");
 	if(data->tag == 2 || data->tag == 1 || data->tag == 3 || data->tag == 4)
