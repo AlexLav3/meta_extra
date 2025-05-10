@@ -13,7 +13,7 @@ Functionality
 
 Extracts: 
  Camera make and model -> bugs, but works mostly.
-- Latitude and Longitude (if available) -> feature not working yet.
+- Latitude and Longitude (if available)
 
 All processing is done using manual offset calculations and byte-level logic.
 
@@ -38,13 +38,8 @@ GCC
 Ubuntu Linux
 
 📂 Usage
-- Edit main() to include the target file name (use full path if needed)
-![image](https://github.com/user-attachments/assets/1b0eba3c-0df3-4a34-8a2c-43e1d7c88602)
-
 - make 
-- ./meta_ext
-
-![image](https://github.com/user-attachments/assets/491b37b5-b4d1-4cf4-ad33-a4f7a5487e5a)
+- ./meta_ext file_name.jpg
 
 🔍 Why?
 This project was built to better understand:
