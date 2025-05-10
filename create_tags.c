@@ -11,9 +11,8 @@ void make_tags(FILE *file, t_data *data, t_res *res) {
 
 void str_tags(FILE *file, t_data *data, t_res *res) {
   long current = ftell(file);
-  size_t absolute_offset =
-      data->offset + data->tiff_start; // Adjust the offset calculation to be relative to the TIFF start
-  size_t bytesRead;
+  size_t absolute_offset = data->offset + data->tiff_start; // Adjust the offset calculation to be relative to the TIFF start
+  size_t bytesRead = 0;
 
   // Print debug information about offsets and counts
   // printf("Offset: %u, TIFF Start: %u, Absolute Offset: %zu, Count: %u\n",
