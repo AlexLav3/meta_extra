@@ -59,6 +59,7 @@ typedef struct
 	t_res			res_data;
 }					t_data;
 
+void 				init(t_data *data);
 //reading and finding
 bool				read_file(FILE *file, t_data *data);
 bool				find_exif(FILE *file, t_data *data);

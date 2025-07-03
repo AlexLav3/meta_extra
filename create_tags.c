@@ -27,7 +27,7 @@ void str_tags(FILE *file, t_data *data, t_res *res) {
   str[bytesRead] = '\0';
 
   // Trim null bytes if necessary
-  size_t start_idx;
+  size_t start_idx = 0;
   while (start_idx < bytesRead && (str[start_idx] < 32 || str[start_idx] > 126))
     start_idx++;
   // get the cleaned string (skip the padding)
@@ -35,14 +35,22 @@ void str_tags(FILE *file, t_data *data, t_res *res) {
     // for(size_t i = 0; i < bytesRead; i++)
     // 	printf("%c, %zu\n", str[i], i);
     // printf("\nTag: %i\n", data->tag);
-    if (data->tag == MAKE)
+    if (data->tag == MAKE){
+      if(res->make)
+        free(res->make);
       res->make = strdup(&str[start_idx]);
-    else if (data->tag == MODEL)
+    }
+    else if (data->tag == MODEL){
+      if(res->model)
+        free(res->model);
       res->model = strdup(&str[start_idx]);
-    else if (data->tag == NOTHSOUTH)
+    }
+    else if (data->tag == NOTHSOUTH){
       res->north_south = str[start_idx];
-    else if (data->tag == EASTWEAST)
+    }
+    else if (data->tag == EASTWEAST){
       res->east_west = str[start_idx];
+    }
     // debug info
     // printf("start index: %zu\n", start_idx);
     // printf("bytes read: %zu\n", bytesRead);
