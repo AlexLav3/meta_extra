@@ -46,10 +46,13 @@ void str_tags(FILE *file, t_data *data, t_res *res) {
       res->model = strdup(&str[start_idx]);
     }
     else if (data->tag == NOTHSOUTH){
+      printf("here ok\n");
       res->north_south = str[start_idx];
     }
     else if (data->tag == EASTWEAST){
+      printf("here ok\n");
       res->east_west = str[start_idx];
+
     }
     // debug info
     // printf("start index: %zu\n", start_idx);
@@ -63,7 +66,7 @@ void str_tags(FILE *file, t_data *data, t_res *res) {
 }
 
 void rational_tags(FILE *file, t_data *data, t_res *res) {
-   //printf("\nRational Tags: %i\n", data->tag);
+ // printf("\nRational Tags: %i\n", data->tag);
   if (data->tag != LONGITUDE && data->tag != LATITUDE)
     return;
 
@@ -79,7 +82,7 @@ void rational_tags(FILE *file, t_data *data, t_res *res) {
   GPS_Coord result = convert_coord(coords);
 
   if (data->tag == LONGITUDE)
-    res->longitude = result;
+    res->longitude = result; 
   else if (data->tag == LATITUDE)
     res->latitude = result;
   else

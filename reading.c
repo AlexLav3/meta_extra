@@ -131,12 +131,12 @@ bool tag_found(uint16_t tag, t_data *data) {
     return true;
 
   case 0x0001: // North/South
-     //printf("Found 'North/South' tag \n");
+     printf("Found 'North/South' tag \n");
     data->tag = NOTHSOUTH;
     return true;
 
   case 0x0002: // Latitude
-     //printf("Found 'Latitude' tag \n");
+     printf("Found 'Latitude' tag \n");
     data->type = 5;
     data->tag = LATITUDE;
     return true;

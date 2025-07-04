@@ -5,6 +5,8 @@ double rational_to_double(Rational number) {
 }
 
 double convert_to_decimal(Rational *coords, char ref) {
+  if(!coords)
+    return 0;
   double deg = rational_to_double(coords[0]);
   double min = rational_to_double(coords[1]);
   double sec = rational_to_double(coords[2]);
