@@ -1,7 +1,7 @@
 #include "meta_ext.h"
 
 void make_tags(FILE *file, t_data *data, t_res *res) {
-  // printf("entering MAKE TAGS\n");
+   //printf("entering MAKE TAGS\n");
   if (data->type == 2 && data->count < 256)
     str_tags(file, data, res);
   else if (data->type == 5 && (data->tag == LATITUDE || data->tag == LONGITUDE))
@@ -63,7 +63,7 @@ void str_tags(FILE *file, t_data *data, t_res *res) {
 }
 
 void rational_tags(FILE *file, t_data *data, t_res *res) {
-  // printf("\nRational Tags: %i\n", data->tag);
+   //printf("\nRational Tags: %i\n", data->tag);
   if (data->tag != LONGITUDE && data->tag != LATITUDE)
     return;
 

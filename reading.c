@@ -5,7 +5,7 @@ bool find_exif(FILE *file, t_data *data) {
 
   if (!file)
     return (false);
-  while ((bytesRead = fread(data->buffer, 1, sizeof(data->buffer), file)) > 0) {
+  while ((bytesRead = fread(data->buffer, 1, data->buff_size, file)) > 0) {
     for (size_t i = 0; i < bytesRead - 10; i++) {
       if (data->buffer[i] == 0xFF && data->buffer[i + 1] == 0xE1 &&
           data->buffer[i + 4] == 0x45 && data->buffer[i + 5] == 0x78 &&
@@ -23,15 +23,15 @@ bool read_file(FILE *file, t_data *data) {
   size_t bytesRead = 0;
 
   if (find_exif(file, data)) {
-    // printf("EXIF data found at position %zu\n", data->pos);
+    //printf("EXIF data found at position %zu\n", data->pos);
     fseek(file, data->pos, SEEK_SET); // Move to EXIF position and load new buffer
-    bytesRead = fread(data->buffer, 1, sizeof(data->buffer), file);
+    bytesRead = fread(data->buffer, 1, data->buff_size, file);
     data->byt_read = bytesRead;
     if (!find_tiff(data, bytesRead)) {
-      // printf("TIFF header not found\n");
+       //printf("TIFF header not found\n");
       return (false);
     }
-    // printf("\nEXIF data extraction complete.\n");
+    //printf("\nEXIF data extraction complete.\n");
     find_tags(data);
     return (true);
   } 
@@ -109,17 +109,16 @@ bool find_gpt_tags(FILE *file, t_data *data, uint16_t entry_count, size_t ifd_st
 }
 
 void get_info(t_data *data, int offset, uint16_t tag) {
-  // printf("entering get info\n");
+   //printf("entering get info\n");
   if (data->tag == 2 || data->tag == 1 || data->tag == 3 || data->tag == 4)
     data->type = data->buffer[offset + 2] | (data->buffer[offset + 3] << 8);
-  data->count = data->buffer[offset + 4] | (data->buffer[offset + 5] << 8) | (data->buffer[offset + 6] << 16) |(data->buffer[offset + 7] << 24);
-  data->offset = data->buffer[offset + 8] | (data->buffer[offset + 9] << 8) |(data->buffer[offset + 10] << 16) | (data->buffer[offset + 11] << 24);
-  // printf("get info Type: %u, Count: %u, Offset: %u\n", data->type,
-  // data->count,data->offset);
+  	data->count = data->buffer[offset + 4] | (data->buffer[offset + 5] << 8) | (data->buffer[offset + 6] << 16) |(data->buffer[offset + 7] << 24);
+  	data->offset = data->buffer[offset + 8] | (data->buffer[offset + 9] << 8) |(data->buffer[offset + 10] << 16) | (data->buffer[offset + 11] << 24);
+   //printf("get info Type: %u, Count: %u, Offset: %u\n", data->type,data->count,data->offset);
 }
 
 bool tag_found(uint16_t tag, t_data *data) {
-  // printf("tag found TAG 0x%04X\n", tag);
+   //printf("tag found TAG 0x%04X\n", tag);
   switch (tag) {
   case 0x0110: // Model
     // printf("Found 'Model' tag \n");
@@ -132,23 +131,23 @@ bool tag_found(uint16_t tag, t_data *data) {
     return true;
 
   case 0x0001: // North/South
-    // printf("Found 'Make' tag \n");
+     //printf("Found 'North/South' tag \n");
     data->tag = NOTHSOUTH;
     return true;
 
   case 0x0002: // Latitude
-    // printf("Found 'Latitude' tag \n");
+     //printf("Found 'Latitude' tag \n");
     data->type = 5;
     data->tag = LATITUDE;
     return true;
 
   case 0x0003: // East/West
-    // printf("Found 'East/West' tag \n");
+     //printf("Found 'East/West' tag \n");
     data->tag = EASTWEAST;
     return true;
 
   case 0x0004: // Longitude
-    // printf("Found 'Longitude' tag \n");
+     //printf("Found 'Longitude' tag \n");
     data->type = 5;
     data->tag = LONGITUDE;
     return true;
