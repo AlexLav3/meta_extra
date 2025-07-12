@@ -1,6 +1,3 @@
-⚠️ This project is in development! ⚠️ 
-
-
 
 ❓ What Is It?
 
@@ -12,7 +9,7 @@ Functionality
 - Locates EXIF segment and TIFF header
 
 Extracts: 
- Camera make and model -> bugs, but works mostly.
+- Camera make and model
 - Latitude and Longitude (if available)
 
 All processing is done using manual offset calculations and byte-level logic.
@@ -20,22 +17,20 @@ All processing is done using manual offset calculations and byte-level logic.
 
 ⚠️ 📝 Notes
 
-
 ✅ Tested with photos taken on Android devices
 
-
 ❗ Not all JPEGs contain EXIF data — especially if edited, downloaded from certain platforms (ex. Instagram), or stripped by privacy settings
-
 
 ✉️ Photos sent via Gmail (to self) retain EXIF data — tested.
 
 Works entirely with raw byte buffers and offsets
-Being developed on Ubuntu
+Developed on Ubuntu/Debian
 
 🛠️ Built With
 C (ISO C99)
 GCC
 Ubuntu Linux
+Debian
 
 📂 Usage
 - make 
@@ -47,6 +42,3 @@ JPEG and EXIF binary structure
 Endianness and byte-wise data parsing
 Working with pointers and raw memory access in C
 
-💡 About Me
-
-I'm a student at 42Prague exploring low-level programming and how data is structured at the binary level. I built this tool to try to understand EXIF format internals, and to practice C skills like file I/O, memory access, and working without libraries.
