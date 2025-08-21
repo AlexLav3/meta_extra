@@ -21,7 +21,7 @@ void str_tags(FILE *file, t_data *data, t_res *res) {
   str[bytesRead] = '\0';
 
   // Trim null bytes if necessary
-  size_t start_idx = 0;
+  size_t start_idx = 2;
   while (start_idx < bytesRead && (str[start_idx] < 32 || str[start_idx] > 126))
     start_idx++;
   // get the cleaned string (skip the padding)
