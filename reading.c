@@ -23,7 +23,6 @@ bool read_file(FILE *file, t_data *data) {
   size_t bytesRead = 0;
 
   if (find_exif(file, data)) {
-    //printf("EXIF data found at position %zu\n", data->pos);
     fseek(file, data->pos, SEEK_SET); // Move to EXIF position and load new buffer
     bytesRead = fread(data->buffer, 1, data->buff_size, file);
     data->byt_read = bytesRead;
@@ -45,9 +44,6 @@ bool find_tiff(t_data *data, size_t bytread) {
   for (size_t i = 0; i < bytread; i++) {
     if (data->buffer[i] == 0x49 && data->buffer[i + 1] == 0x49 &&
         data->buffer[i + 2] == 0x2A && data->buffer[i + 3] == 0x00) {
-      // printf("TIFF header found at buffer offset %zu: %02X %02X %02X %02X\n",
-      // i, data->buffer[i], data->buffer[i + 1],data->buffer[i + 2],
-      // data->buffer[i + 3]);
       data->byt_read = bytread;
       data->tiff_start = i;
       return (true);
@@ -56,10 +52,6 @@ bool find_tiff(t_data *data, size_t bytread) {
   return (false);
 }
 
-/* type = kind of data
-Count = how many items of that type.
-Offset = where to find the data if it's too big to fit in the 4-byte space.
-*/
 bool find_tags(t_data *data) {
   bool any = false;
   size_t entry_offset = 0;
@@ -109,24 +101,19 @@ bool find_gpt_tags(FILE *file, t_data *data, uint16_t entry_count, size_t ifd_st
 }
 
 void get_info(t_data *data, int offset, uint16_t tag) {
-   //printf("entering get info\n");
   if (data->tag == 2 || data->tag == 1 || data->tag == 3 || data->tag == 4)
     data->type = data->buffer[offset + 2] | (data->buffer[offset + 3] << 8);
   	data->count = data->buffer[offset + 4] | (data->buffer[offset + 5] << 8) | (data->buffer[offset + 6] << 16) |(data->buffer[offset + 7] << 24);
   	data->offset = data->buffer[offset + 8] | (data->buffer[offset + 9] << 8) |(data->buffer[offset + 10] << 16) | (data->buffer[offset + 11] << 24);
-   //printf("get info Type: %u, Count: %u, Offset: %u\n", data->type,data->count,data->offset);
 }
 
 bool tag_found(uint16_t tag, t_data *data) {
-   //printf("tag found TAG 0x%04X\n", tag);
   switch (tag) {
   case 0x0110: // Model
-    // printf("Found 'Model' tag \n");
     data->tag = MODEL;
     return true;
 
   case 0x010F: // Make
-    // printf("Found 'Make' tag \n");
     data->tag = MAKE;
     return true;
 
@@ -142,12 +129,10 @@ bool tag_found(uint16_t tag, t_data *data) {
     return true;
 
   case 0x0003: // East/West
-     //printf("Found 'East/West' tag \n");
     data->tag = EASTWEAST;
     return true;
 
   case 0x0004: // Longitude
-     //printf("Found 'Longitude' tag \n");
     data->type = 5;
     data->tag = LONGITUDE;
     return true;
